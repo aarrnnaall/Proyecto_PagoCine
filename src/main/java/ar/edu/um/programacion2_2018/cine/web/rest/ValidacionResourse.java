@@ -26,14 +26,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class ValidacionResourse {
-@Autowired
-private TarjetaRepository tarjetaRepository;
-@Autowired
-private ClienteRepository clienteRepository;
-@Autowired
-private PagoRepository pagoRepository;
+    @Autowired
+    private TarjetaRepository tarjetaRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
+    @Autowired
+    private PagoRepository pagoRepository;
 
-private final Logger log = LoggerFactory.getLogger(ValidacionResourse.class);
+    private final Logger log = LoggerFactory.getLogger(ValidacionResourse.class);
 
     @PostMapping("/validacion/{num_tarjeta}/{importe}")
     @Timed
@@ -48,30 +48,30 @@ private final Logger log = LoggerFactory.getLogger(ValidacionResourse.class);
         final String uuid = UUID.randomUUID().toString();
         String salida="";
         int importe_int = importe.intValue();
-         if(saldo_int<importe_int)  {
+        if(saldo_int<importe_int)  {
             salida="Saldo Insuficiente";
-         }
-         else if(saldo_int>=importe_int)  {
-             Pago pago=new Pago();
-             pago.setImporte(importe);
-             pago.setTarjeta(peticion_tarjeta);
-             pago.setCreated(fecha_actual2);
-             pago.setUpdated(fecha_actual2);
-             pago.setPagoUuid(uuid);
-             pagoRepository.save(pago);
+        }
+        else if(saldo_int>=importe_int)  {
+            Pago pago=new Pago();
+            pago.setImporte(importe);
+            pago.setTarjeta(peticion_tarjeta);
+            pago.setCreated(fecha_actual2);
+            pago.setUpdated(fecha_actual2);
+            pago.setPagoUuid(uuid);
+            pagoRepository.save(pago);
 
-             BigDecimal resta = new BigDecimal(saldo_int-importe_int);
+            BigDecimal resta = new BigDecimal(saldo_int-importe_int);
 
-             peticion_tarjeta.setSaldo(resta);
+            peticion_tarjeta.setSaldo(resta);
 
-             tarjetaRepository.save(peticion_tarjeta);
+            tarjetaRepository.save(peticion_tarjeta);
             salida="Saldo Suficiente";
-         }
+        }
 
-         return salida;
+        return salida;
 
 
-     }
+    }
 
 
 }

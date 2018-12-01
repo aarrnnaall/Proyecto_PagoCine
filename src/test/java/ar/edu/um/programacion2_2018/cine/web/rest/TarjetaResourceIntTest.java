@@ -46,8 +46,8 @@ import ar.edu.um.programacion2_2018.cine.domain.enumeration.Tipo;
 @SpringBootTest(classes = ProyectoPagoCineApp.class)
 public class TarjetaResourceIntTest {
 
-    private static final String DEFAULT_NUMERO = "6";
-    private static final String UPDATED_NUMERO = "2";
+    private static final String DEFAULT_NUMERO = "0";
+    private static final String UPDATED_NUMERO = "9";
 
     private static final Tipo DEFAULT_TIPO = Tipo.DEBITO;
     private static final Tipo UPDATED_TIPO = Tipo.CREDITO;

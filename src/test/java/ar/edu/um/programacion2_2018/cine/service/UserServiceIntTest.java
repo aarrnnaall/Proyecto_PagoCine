@@ -2,9 +2,7 @@ package ar.edu.um.programacion2_2018.cine.service;
 
 import ar.edu.um.programacion2_2018.cine.ProyectoPagoCineApp;
 import ar.edu.um.programacion2_2018.cine.config.Constants;
-import ar.edu.um.programacion2_2018.cine.domain.PersistentToken;
 import ar.edu.um.programacion2_2018.cine.domain.User;
-import ar.edu.um.programacion2_2018.cine.repository.PersistentTokenRepository;
 import ar.edu.um.programacion2_2018.cine.repository.UserRepository;
 import ar.edu.um.programacion2_2018.cine.service.dto.UserDTO;
 import ar.edu.um.programacion2_2018.cine.service.util.RandomUtil;
@@ -25,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.List;
@@ -46,9 +43,6 @@ import static org.mockito.Mockito.when;
 public class UserServiceIntTest {
 
     @Autowired
-    private PersistentTokenRepository persistentTokenRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -64,7 +58,6 @@ public class UserServiceIntTest {
 
     @Before
     public void init() {
-        persistentTokenRepository.deleteAll();
         user = new User();
         user.setLogin("johndoe");
         user.setPassword(RandomStringUtils.random(60));
@@ -77,19 +70,6 @@ public class UserServiceIntTest {
 
         when(dateTimeProvider.getNow()).thenReturn(Optional.of(LocalDateTime.now()));
         auditingHandler.setDateTimeProvider(dateTimeProvider);
-    }
-
-    @Test
-    @Transactional
-    public void testRemoveOldPersistentTokens() {
-        userRepository.saveAndFlush(user);
-        int existingCount = persistentTokenRepository.findByUser(user).size();
-        LocalDate today = LocalDate.now();
-        generateUserToken(user, "1111-1111", today);
-        generateUserToken(user, "2222-2222", today.minusDays(32));
-        assertThat(persistentTokenRepository.findByUser(user)).hasSize(existingCount + 2);
-        userService.removeOldPersistentTokens();
-        assertThat(persistentTokenRepository.findByUser(user)).hasSize(existingCount + 1);
     }
 
     @Test
@@ -178,17 +158,6 @@ public class UserServiceIntTest {
         userService.removeNotActivatedUsers();
         users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(now.minus(3, ChronoUnit.DAYS));
         assertThat(users).isEmpty();
-    }
-
-    private void generateUserToken(User user, String tokenSeries, LocalDate localDate) {
-        PersistentToken token = new PersistentToken();
-        token.setSeries(tokenSeries);
-        token.setUser(user);
-        token.setTokenValue(tokenSeries + "-data");
-        token.setTokenDate(localDate);
-        token.setIpAddress("127.0.0.1");
-        token.setUserAgent("Test agent");
-        persistentTokenRepository.saveAndFlush(token);
     }
 
     @Test

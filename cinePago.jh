@@ -43,3 +43,4 @@ relationship OneToMany {
 }
 
 paginate * with pagination
+
