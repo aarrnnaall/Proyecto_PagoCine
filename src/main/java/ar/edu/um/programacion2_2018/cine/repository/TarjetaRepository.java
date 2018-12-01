@@ -4,6 +4,8 @@ import ar.edu.um.programacion2_2018.cine.domain.Tarjeta;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+
 
 /**
  * Spring Data  repository for the Tarjeta entity.
@@ -12,4 +14,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TarjetaRepository extends JpaRepository<Tarjeta, Long> {
 
+    Tarjeta findByNumero(String numero_tarjeta);
 }
