@@ -5,21 +5,15 @@ import ar.edu.um.programacion2_2018.cine.domain.Tarjeta;
 import ar.edu.um.programacion2_2018.cine.repository.ClienteRepository;
 import ar.edu.um.programacion2_2018.cine.repository.PagoRepository;
 import ar.edu.um.programacion2_2018.cine.repository.TarjetaRepository;
-import ar.edu.um.programacion2_2018.cine.web.rest.errors.BadRequestAlertException;
-import ar.edu.um.programacion2_2018.cine.web.rest.util.HeaderUtil;
 import com.codahale.metrics.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -49,7 +43,7 @@ public class ValidacionResourse {
         String salida="";
         int importe_int = importe.intValue();
         if(saldo_int<importe_int)  {
-            salida="Saldo Insuficiente";
+            salida=null;
         }
         else if(saldo_int>=importe_int)  {
             Pago pago=new Pago();
@@ -65,7 +59,7 @@ public class ValidacionResourse {
             peticion_tarjeta.setSaldo(resta);
 
             tarjetaRepository.save(peticion_tarjeta);
-            salida="Saldo Suficiente";
+            salida=uuid;
         }
 
         return salida;
